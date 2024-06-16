@@ -1,0 +1,2 @@
+# Stockbot
+Stockbot for discord
