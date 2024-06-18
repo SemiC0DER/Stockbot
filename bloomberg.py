@@ -1,5 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
+
 def getLink():
     url = "https://www.bloomberg.co.kr/blog/category/news/"
     res = requests.get(url).text
@@ -17,6 +18,6 @@ def getArticle():
     subtitles = soup.select("strong")
 
     result = [f"{title.text}\n"]
-    result.extend(list(map(lambda num: f"{num}. {subtitles[num-1].text.strip('\n')}" , range(1, len(subtitles) + 1))))
+    result.extend(list(map(lambda num: f"{num}. {subtitles[num-1].text.strip()}", range(1, len(subtitles) + 1))))
 
     return result

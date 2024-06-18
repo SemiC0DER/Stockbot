@@ -4,7 +4,7 @@ main branch입니다 main branch는 수정하기 전 상의해주세요
 import discord,os
 from discord.ext import commands
 import bloomberg
-
+import stockmarket
 #토큰
 token_path = os.path.dirname( os.path.abspath( __file__ ) )+"/token.txt"
 t = open(token_path,"r",encoding="utf-8")
@@ -14,9 +14,9 @@ print("Token_key : ",token)
 game = discord.Game("!도움")
 bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
 cmd = {
-	'도움': '무엇을 도와드릴까요?\n저는 주식 정보를 알려주는 봇 Stocker입니다!\n!명령어로 명령어를 확인하세요',
-	'명령어': '가능한 명령어를 출력합니다.',
-	'블룸버그': '오늘의 블룸버그 기사를 요약합니다.'
+	'!도움': '무엇을 도와드릴까요?',
+	'!블룸버그': '오늘의 블룸버그 기사를 요약합니다.',
+    '!증시': '오늘의 증시를 보여줍니다'
 }
 
 class Bloombutton(discord.ui.View):
@@ -27,6 +27,14 @@ class Bloombutton(discord.ui.View):
         
     async def on_timeout(self):
         self.clear_items()
+
+def embedMarket(n):
+    market = stockmarket.getDomesticMarket(n)
+    current_color = 0xFF0000 if market[3][0] == '+' else 0x0100FF
+    embed = discord.Embed(title=market[0], description=market[1], color=current_color)
+    embed.add_field(name=market[2], value=market[3], inline=False)
+    embed.set_thumbnail(url=market[4])
+    return embed
     
 @bot.event
 async def on_ready():
@@ -34,11 +42,7 @@ async def on_ready():
     
 @bot.command()
 async def 도움(ctx):
-	await ctx.send('무엇을 도와드릴까요?\n저는 주식 정보를 알려주는 봇 Stocker입니다!\n!명령어로 명령어를 확인하세요')
-
-@bot.command()
-async def 명령어(ctx):
-	commands_list = '\n'.join([f"!{command}: {description}" for command, description in cmd.items()])
+	commands_list = '\n'.join([f"{command}: {description}" for command, description in cmd.items()])
 	await ctx.send(commands_list)
 
 @bot.command()
@@ -46,4 +50,16 @@ async def 블룸버그(ctx):
 	articles = bloomberg.getArticle()
 	await ctx.send('\n'.join(articles))
 	await ctx.send(view=Bloombutton())
+
+@bot.command()
+async def 증시(ctx):
+    kospi = embedMarket(1)
+    await ctx.channel.send(embed=kospi)
+
+    kosdaq = embedMarket(2)
+    await ctx.channel.send(embed=kosdaq)
+
+    kospi200 = embedMarket(3)
+    await ctx.channel.send(embed=kospi200)
+
 bot.run(token)
