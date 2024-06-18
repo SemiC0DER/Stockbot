@@ -26,7 +26,7 @@ class Bloombutton(discord.ui.View):
         self.add_item(button)
         
     async def on_timeout(self):
-        self.disable_all_items()
+        self.clear_items()
     
 @bot.event
 async def on_ready():
