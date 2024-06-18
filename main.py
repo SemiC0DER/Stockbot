@@ -1,5 +1,4 @@
 '''
-<<<<<<< HEAD
 main branch입니다 main branch는 수정하기 전 상의해주세요
 '''
 import discord,os
@@ -15,7 +14,7 @@ print("Token_key : ",token)
 game = discord.Game("!도움")
 bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
 cmd = {
-	'도움': '무엇을 도와드릴까요?',
+	'도움': '무엇을 도와드릴까요?\n저는 주식 정보를 알려주는 봇 Stocker입니다!\n!명령어로 명령어를 확인하세요',
 	'명령어': '가능한 명령어를 출력합니다.',
 	'블룸버그': '오늘의 블룸버그 기사를 요약합니다.'
 }
@@ -23,12 +22,10 @@ cmd = {
 class Bloombutton(discord.ui.View):
     def __init__(self):
         super().__init__(timeout=30)  # times out after 30 seconds
-        button = discord.ui.Button(label='바로가기', style=discord.ButtonStyle.url, url="https://www.bloomberg.co.kr/blog/five-france-stock-optimism/")
+        button = discord.ui.Button(label='바로가기', style=discord.ButtonStyle.url, url=bloomberg.getLink())
         self.add_item(button)
         
     async def on_timeout(self):
-        # set the view to None so that the buttons are no longer available
-        # or you could just disable the buttons if you want
         await self.message.edit(content="링크가 종료되었습니다", view=None)
     
 @bot.event
@@ -37,7 +34,7 @@ async def on_ready():
     
 @bot.command()
 async def 도움(ctx):
-	await ctx.send("무엇을 도와드릴까요?")
+	await ctx.send('무엇을 도와드릴까요?\n저는 주식 정보를 알려주는 봇 Stocker입니다!\n!명령어로 명령어를 확인하세요')
 
 @bot.command()
 async def 명령어(ctx):
@@ -50,7 +47,3 @@ async def 블룸버그(ctx):
 	await ctx.send('\n'.join(articles))
 	await ctx.send(view=Bloombutton())
 bot.run(token)
-=======
-main branch offset do not change!
-'''
->>>>>>> 26b96beaa359322bb8d5e68ee8323d5955ff3e71

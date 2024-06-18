@@ -5,11 +5,11 @@ def getLink():
     res = requests.get(url).text
     soup = BeautifulSoup(res, "lxml")
     link = soup.find('h3').find('a')['href']
-    print(link)
+    return link
 
 
 def getArticle():
-    url = "https://www.bloomberg.co.kr/blog/five-france-stock-optimism/"
+    url = getLink()
     res = requests.get(url).text
 
     soup = BeautifulSoup(res, "lxml")
@@ -20,5 +20,3 @@ def getArticle():
     result.extend(list(map(lambda num: f"{num}. {subtitles[num-1].text.strip('\n')}" , range(1, len(subtitles) + 1))))
 
     return result
-
-getLink()
