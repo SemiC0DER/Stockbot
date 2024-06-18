@@ -26,7 +26,7 @@ class Bloombutton(discord.ui.View):
         self.add_item(button)
         
     async def on_timeout(self):
-        await self.message.edit(content="링크가 종료되었습니다", view=None)
+        self.disable_all_items()
     
 @bot.event
 async def on_ready():
