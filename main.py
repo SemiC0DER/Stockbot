@@ -1,4 +1,5 @@
 '''
+<<<<<<< HEAD
 main branch입니다 main branch는 수정하기 전 상의해주세요
 '''
 import discord,os
@@ -49,3 +50,7 @@ async def 블룸버그(ctx):
 	await ctx.send('\n'.join(articles))
 	await ctx.send(view=Bloombutton())
 bot.run(token)
+=======
+main branch offset do not change!
+'''
+>>>>>>> 26b96beaa359322bb8d5e68ee8323d5955ff3e71
