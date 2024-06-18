@@ -1,5 +1,12 @@
 import requests
 from bs4 import BeautifulSoup
+def getLink():
+    url = "https://www.bloomberg.co.kr/blog/category/news/"
+    res = requests.get(url).text
+    soup = BeautifulSoup(res, "lxml")
+    link = soup.find('h3').find('a')['href']
+    print(link)
+
 
 def getArticle():
     url = "https://www.bloomberg.co.kr/blog/five-france-stock-optimism/"
@@ -13,3 +20,5 @@ def getArticle():
     result.extend(list(map(lambda num: f"{num}. {subtitles[num-1].text.strip('\n')}" , range(1, len(subtitles) + 1))))
 
     return result
+
+getLink()
