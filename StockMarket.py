@@ -65,3 +65,5 @@ def getWorldMarket(n):
     market.append(graph)
 
     return market
+
+print(getWorldMarket(2))
