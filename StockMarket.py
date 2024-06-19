@@ -41,3 +41,9 @@ def getDomesticMarket(n):
         market = None
 
     return market
+
+def worldURL(n):
+    return True
+
+def getWorldMarket(n):
+    return True
