@@ -31,7 +31,8 @@ cmd = {
     '!영국': '영국 FTSE 100 주가를 보여줍니다',
     '!프랑스': '프랑스 CAC 40 주가를 보여줍니다',
     '!독일': '독일 DAX 주가를 보여줍니다',
-    '!용어': '!용어 \{찾을 용어\}로 주식 용어를 보여줍니다.'
+    '!용어': '!용어 \{찾을 용어\}로 주식 용어를 보여줍니다.',
+    '!용어사전': '등재된 용어들의 목록을 보여줍니다.'
 }
     
 @bot.event
@@ -49,7 +50,8 @@ async def 블룸버그(ctx):
     articles = Bloomberg.getArticle()
     link = Bloomberg.getLink()
     button = MessageTools.linkbutton(link)
-    await ctx.send('\n'.join(articles))
+    today_articles = discord.Embed(title=articles[0], description='\n'.join(articles[1:]), color=0xffc0cb)
+    await ctx.send(embed=today_articles)
     await ctx.send(view=button)
 
 @bot.command()
@@ -129,5 +131,11 @@ async def 용어(ctx,*,text):
     meaning = StockDict.stockWord(text)
     page = discord.Embed(title=text, description=meaning, color=0x62c1cc)
     await ctx.send(embed=page)
+
+@bot.command()
+async def 용어사전(ctx):
+    wordlist = StockDict.wordList()
+    book = discord.Embed(title='용어사전', description=wordlist, color=0x62c1cc)
+    await ctx.send(embed=book)
 
 bot.run(token)
