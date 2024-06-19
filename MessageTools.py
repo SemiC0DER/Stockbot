@@ -2,8 +2,10 @@ import discord
 
 def embedMarket(market):
     current_color = 0xFF0000 if market[3][0] == '+' else 0x0100FF
-    embed = discord.Embed(title=market[0], description=market[1], color=current_color)
-    embed.add_field(name=market[2], value=market[3], inline=False)
+    embed = discord.Embed(title=market[0], description='', color=current_color)
+    embed.add_field(name=market[1], value='', inline=False)
+    embed.add_field(name=market[2], value='', inline=False)
+    embed.add_field(name=market[3], value='', inline=False)
     embed.set_image(url=market[4])
     return embed
 
