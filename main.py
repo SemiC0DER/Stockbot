@@ -4,7 +4,7 @@ main branch입니다 main branch는 수정하기 전 상의해주세요
 import discord,os
 from discord.ext import commands
 import Bloomberg
-import StockMarket
+import DomesticMarket
 import MessageTools
 import StockDict
 
@@ -31,7 +31,7 @@ async def on_ready():
     
 @bot.command()
 async def 도움(ctx):
-    commands_list = '\n'.join([f"{command}: {description}" for command, description in cmd.items()])
+    commands_list = '\n\n'.join([f"{command}: {description}" for command, description in cmd.items()])
     help = discord.Embed(title='도움말', description=commands_list, color=0xffc0cb)
     await ctx.send(embed=help)
 	
@@ -45,19 +45,19 @@ async def 블룸버그(ctx):
 
 @bot.command()
 async def 코스피(ctx):
-    market = StockMarket.getDomesticMarket(1)
+    market = DomesticMarket.getDomesticMarket(1)
     kospi = MessageTools.embedMarket(market)
     await ctx.send(embed=kospi)
 
 @bot.command()
 async def 코스닥(ctx):
-    market = StockMarket.getDomesticMarket(2)
+    market = DomesticMarket.getDomesticMarket(2)
     kosdaq = MessageTools.embedMarket(market)
     await ctx.send(embed=kosdaq)
 
 @bot.command()
 async def 코스피200(ctx):
-    market = StockMarket.getDomesticMarket(3)
+    market = DomesticMarket.getDomesticMarket(3)
     kospi = MessageTools.embedMarket(market)
     await ctx.send(embed=kospi)
 
