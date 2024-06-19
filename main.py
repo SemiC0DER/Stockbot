@@ -1,5 +1,5 @@
 '''
-main branch입니다 main branch는 수정하기 전 상의해주세요
+봇이 명령어를 받는 공간입니다
 '''
 import discord,os
 from discord.ext import commands
