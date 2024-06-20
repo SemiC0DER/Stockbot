@@ -19,20 +19,10 @@ bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
 cmd = {
 	'!도움': '무엇을 도와드릴까요?',
 	'!블룸버그': '오늘의 블룸버그 기사를 요약합니다.',
-    '!코스피': '코스피 주가를 보여줍니다.',
-    '!코스닥': '코스닥 주가를 보여줍니다.',
-    '!코스피200': '코스피200 주가를 보여줍니다.',
-    '!다우': '다우 산업 주가를 보여줍니다.',
-    '!나스닥': '나스닥 종합 주가를 보여줍니다',
-    '!SP': 'S&P 500 주가를 보여줍니다',
-    '!니케이': '니케이 225 주가를 보여줍니다',
-    '!상해': '상해종합 주가를 보여줍니다',
-    '!항셍': '항셍 주가를 보여줍니다',
-    '!영국': '영국 FTSE 100 주가를 보여줍니다',
-    '!프랑스': '프랑스 CAC 40 주가를 보여줍니다',
-    '!독일': '독일 DAX 주가를 보여줍니다',
-    '!용어': '!용어 \{찾을 용어\}로 주식 용어를 보여줍니다.',
-    '!용어사전': '등재된 용어들의 목록을 보여줍니다.'
+    '!증시': '(!증시 \"찾을 증시\)"로 현재시각의 증시를 보여줍니다. (!증시목록으로 종류를 보여줍니다)',
+    '!증시목록': '!증시 명령어로 보여줄 수 있는 주식시장의 목록을 보여줍니다.',
+    '!용어': '(!용어 \"찾을 용어\")로 주식 용어를 보여줍니다. (!용어목록으로 용어들을 보여줍니다.)',
+    '!용어목록': '등재된 용어들의 목록을 보여줍니다.'
 }
     
 @bot.event
@@ -55,87 +45,43 @@ async def 블룸버그(ctx):
     await ctx.send(view=button)
 
 @bot.command()
-async def 코스피(ctx):
-    market = StockMarket.getDomesticMarket(1)
-    kospi = MessageTools.embedMarket(market)
-    await ctx.send(embed=kospi)
+async def 증시(ctx,*,message: str = None):
+    if message:
+        markets = StockMarket.getMarketAll()
+        if message in markets:
+            midx = markets[message]
+
+            if midx <= 3:
+                market = StockMarket.getDomesticMarket(midx)
+            elif 3 < midx <= 12:
+                market = StockMarket.getWorldMarket(midx-4)
+
+            embed = MessageTools.embedMarket(market)
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send('그런 주식시장이 등록되지 않았습니다. 가능한 시장을 !증시목록으로 확인해주세요')
+    else:
+        await ctx.send("찾을 주식시장을 입력해주세요")
 
 @bot.command()
-async def 코스닥(ctx):
-    market = StockMarket.getDomesticMarket(2)
-    kosdaq = MessageTools.embedMarket(market)
-    await ctx.send(embed=kosdaq)
+async def 증시목록(ctx):
+    markets = list(StockMarket.getMarketAll())
+    marketlist = discord.Embed(title='증시목록', description='\n'.join(markets), color=0xED0086)
+    await ctx.send(embed=marketlist)
 
 @bot.command()
-async def 코스피200(ctx):
-    market = StockMarket.getDomesticMarket(3)
-    kospi200 = MessageTools.embedMarket(market)
-    await ctx.send(embed=kospi200)
+async def 용어(ctx,*,text : str = None):
+    if text:
+        meaning = StockDict.stockWord(text)
+        page = discord.Embed(title=text, description=meaning, color=0x62c1cc)
+        await ctx.send(embed=page)
+    else:
+        await ctx.send("찾을 용어를 입력해주세요")
 
 @bot.command()
-async def 다우(ctx):
-    world = StockMarket.getWorldMarket(0)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 니케이(ctx):
-    world = StockMarket.getWorldMarket(1)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 영국(ctx):
-    world = StockMarket.getWorldMarket(2)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 나스닥(ctx):
-    world = StockMarket.getWorldMarket(3)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 상해(ctx):
-    world = StockMarket.getWorldMarket(4)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 프랑스(ctx):
-    world = StockMarket.getWorldMarket(5)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def SP(ctx):
-    world = StockMarket.getWorldMarket(6)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 항셍(ctx):
-    world = StockMarket.getWorldMarket(7)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 독일(ctx):
-    world = StockMarket.getWorldMarket(8)
-    worldembed = MessageTools.embedMarket(world)
-    await ctx.send(embed=worldembed)
-
-@bot.command()
-async def 용어(ctx,*,text):
-    meaning = StockDict.stockWord(text)
-    page = discord.Embed(title=text, description=meaning, color=0x62c1cc)
-    await ctx.send(embed=page)
-
-@bot.command()
-async def 용어사전(ctx):
+async def 용어목록(ctx):
     wordlist = StockDict.wordList()
-    book = discord.Embed(title='용어사전', description=wordlist, color=0x62c1cc)
+    book = discord.Embed(title='용어목록', description=wordlist, color=0x62c1cc)
     await ctx.send(embed=book)
 
 bot.run(token)
