@@ -47,9 +47,9 @@ async def AP(ctx):
 @bot.command()
 async def 블룸버그(ctx):
     articles = Bloomberg.getArticle()
-    link = Bloomberg.getLink()
-    button = MessageTools.linkbutton(link)
-    today_articles = discord.Embed(title=articles[0], description='\n'.join(articles[1:]), color=0xffc0cb)
+    today_articles = discord.Embed(title=articles[0], description=articles[1], color=0xffc0cb)
+    today_articles.set_image(url=articles[2])
+    button = MessageTools.linkbutton(articles[3])
     await ctx.send(embed=today_articles)
     await ctx.send(view=button)
 

@@ -18,6 +18,11 @@ def getArticle():
     subtitles = soup.select("strong")
 
     result = [f"{title.text}\n"]
-    result.extend(list(map(lambda num: f"{num}. {subtitles[num-1].text.strip()}", range(1, len(subtitles) + 1))))
+    result.append('\n'.join(list(map(lambda num: f"{num}. {subtitles[num-1].text.strip()}", range(1, len(subtitles) + 1)))))
+    img = soup.find('img')['src']
+    result.append(img)
+    result.append(url)
 
     return result
+
+print(getArticle())
