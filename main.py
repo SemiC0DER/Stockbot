@@ -3,6 +3,7 @@
 '''
 import discord,os
 from discord.ext import commands
+import Ap
 import Bloomberg
 import StockMarket
 import MessageTools
@@ -12,14 +13,13 @@ import StockDict
 token_path = os.path.dirname( os.path.abspath( __file__ ) )+"/token.txt"
 t = open(token_path,"r",encoding="utf-8")
 token = t.read().split()[0]
-print("Token_key : ",token)
 
 game = discord.Game("!도움")
 bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
 cmd = {
 	'!도움': '무엇을 도와드릴까요?',
 	'!블룸버그': '오늘의 블룸버그 기사를 요약합니다.',
-    '!증시': '(!증시 \"찾을 증시\)"로 현재시각의 증시를 보여줍니다. (!증시목록으로 종류를 보여줍니다)',
+    '!증시': '(!증시 \"찾을 증시\")로 현재시각의 증시를 보여줍니다. (!증시목록으로 종류를 보여줍니다)',
     '!증시목록': '!증시 명령어로 보여줄 수 있는 주식시장의 목록을 보여줍니다.',
     '!용어': '(!용어 \"찾을 용어\")로 주식 용어를 보여줍니다. (!용어목록으로 용어들을 보여줍니다.)',
     '!용어목록': '등재된 용어들의 목록을 보여줍니다.'
@@ -34,7 +34,16 @@ async def 도움(ctx):
     commands_list = '\n\n'.join([f"{command}: {description}" for command, description in cmd.items()])
     help = discord.Embed(title='도움말', description=commands_list, color=0xffc0cb)
     await ctx.send(embed=help)
-	
+
+@bot.command()
+async def AP(ctx):
+    articles = Ap.getArticle()
+    today_articles = discord.Embed(title=articles[0], description=articles[1], color=0x000000)
+    today_articles.set_image(url=articles[2])
+    button = MessageTools.linkbutton(articles[3])
+    await ctx.send(embed=today_articles)
+    await ctx.send(view=button)
+
 @bot.command()
 async def 블룸버그(ctx):
     articles = Bloomberg.getArticle()
