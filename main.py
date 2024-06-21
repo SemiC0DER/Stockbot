@@ -2,20 +2,22 @@
 봇이 명령어를 받는 공간입니다
 '''
 import discord,os
-from discord.ext import commands
+#from discord.ext import commands
 import Ap
 import Bloomberg
 import StockMarket
 import MessageTools
 import StockDict
+from dotenv import load_dotenv
 
 #토큰
-token_path = os.path.dirname( os.path.abspath( __file__ ) )+"/token.txt"
-t = open(token_path,"r",encoding="utf-8")
-token = t.read().split()[0]
+load_dotenv()
 
+#봇생성
+bot = discord.Bot()
+
+#
 game = discord.Game("!도움")
-bot = commands.Bot(command_prefix='!',intents=discord.Intents.all())
 cmd = {
 	'!도움': '무엇을 도와드릴까요?',
 	'!블룸버그': '오늘의 블룸버그 기사를 요약합니다.',
@@ -27,15 +29,20 @@ cmd = {
     
 @bot.event
 async def on_ready():
-	print("안녕하세요 주식 정보를 알려주는 봇 Stocker입니다!")
+	print("안녕하세요, 주식 정보를 알려주는 봇 Stocker입니다!")
     
-@bot.command()
+@bot.slash_command(name="도움", description="도움말 보기")
 async def 도움(ctx):
     commands_list = '\n\n'.join([f"{command}: {description}" for command, description in cmd.items()])
-    help = discord.Embed(title='도움말', description=commands_list, color=0xffc0cb)
-    await ctx.send(embed=help)
+    help = discord.Embed(
+        title='도움말',
+        description=commands_list,
+        color=0xffc0cb
+    )
+    await ctx.respond(embed=help)
 
-@bot.command()
+'''
+@bot.slash_command()
 async def AP(ctx):
     articles = Ap.getArticle()
     today_articles = discord.Embed(title=articles[0], description=articles[1], color=0x000000)
@@ -43,8 +50,8 @@ async def AP(ctx):
     button = MessageTools.linkbutton(articles[3])
     await ctx.send(embed=today_articles)
     await ctx.send(view=button)
-
-@bot.command()
+'''
+@bot.slash_command()
 async def 블룸버그(ctx):
     articles = Bloomberg.getArticle()
     today_articles = discord.Embed(title=articles[0], description=articles[1], color=0xffc0cb)
@@ -53,7 +60,7 @@ async def 블룸버그(ctx):
     await ctx.send(embed=today_articles)
     await ctx.send(view=button)
 
-@bot.command()
+@bot.slash_command()
 async def 증시(ctx,*,message: str = None):
     if message:
         markets = StockMarket.getMarketAll()
@@ -72,13 +79,13 @@ async def 증시(ctx,*,message: str = None):
     else:
         await ctx.send("찾을 주식시장을 입력해주세요")
 
-@bot.command()
+@bot.slash_command()
 async def 증시목록(ctx):
     markets = list(StockMarket.getMarketAll())
     marketlist = discord.Embed(title='증시목록', description='\n'.join(markets), color=0xED0086)
     await ctx.send(embed=marketlist)
 
-@bot.command()
+@bot.slash_command()
 async def 용어(ctx,*,text : str = None):
     if text:
         meaning = StockDict.stockWord(text)
@@ -87,10 +94,10 @@ async def 용어(ctx,*,text : str = None):
     else:
         await ctx.send("찾을 용어를 입력해주세요")
 
-@bot.command()
+@bot.slash_command()
 async def 용어목록(ctx):
     wordlist = StockDict.wordList()
     book = discord.Embed(title='용어목록', description=wordlist, color=0x62c1cc)
     await ctx.send(embed=book)
 
-bot.run(token)
+bot.run(os.getenv('TOKEN'))
