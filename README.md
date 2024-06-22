@@ -18,7 +18,7 @@ pip install -r requirements.txt
 ```
 
 ### 3. 필수 파일 추가
-.eva
+.env
 ```
 TOKEN = 토큰토큰토큰숫자문자
 ```
