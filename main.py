@@ -23,7 +23,8 @@ cmd = {
     '/증시': '(/증시 \"찾을 증시\")로 현재시각의 증시를 보여줍니다. (/증시목록으로 종류를 보여줍니다)',
     '/증시목록': '/증시 명령어로 보여줄 수 있는 주식시장의 목록을 보여줍니다.',
     '/용어': '(/용어 \"찾을 용어\")로 주식 용어를 보여줍니다. (/용어목록으로 용어들을 보여줍니다.)',
-    '/용어목록': '등재된 용어들의 목록을 보여줍니다.'
+    '/용어목록': '등재된 용어들의 목록을 보여줍니다.',
+    '/ap':'몰라요 ㅋ'
 }
     
 @bot.event
@@ -40,16 +41,15 @@ async def 도움(ctx):
     )
     await ctx.response.send_message(embed=help)
 
-'''
-@bot.slash_command(name="AP", description=cmd['/AP'])
-async def AP(ctx):
+
+@bot.tree.command(name="ap", description=cmd['/ap'])
+async def ap(ctx):
     articles = Ap.getArticle()
     today_articles = discord.Embed(title=articles[0], description=articles[1], color=0x000000)
     today_articles.set_image(url=articles[2])
     button = MessageTools.linkbutton(articles[3])
-    await ctx.send(embed=today_articles)
-    await ctx.send(view=button)
-'''
+    await ctx.response.send_message(embed=today_articles, view=button)
+
 @bot.tree.command(name="블룸버그", description=cmd['/블룸버그'])
 async def 블룸버그(ctx: discord.Interaction):
     try:
