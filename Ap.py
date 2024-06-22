@@ -16,3 +16,5 @@ def getArticle():
     img = latest.find('img')['src']
     result = [title, description, img, latesturl]
     return result
+
+print(getArticle())

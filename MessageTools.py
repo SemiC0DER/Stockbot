@@ -9,6 +9,11 @@ def embedMarket(market):
     embed.set_image(url=market[4])
     return embed
 
+def embedNews(article):
+    today_article = discord.Embed(title=article[0], description=article[1], color=0x000000)
+    today_article.set_image(url=article[2])
+    return today_article
+
 class linkbutton(discord.ui.View):
     def __init__(self, url):
         super().__init__(timeout=30)  # times out after 30 seconds
