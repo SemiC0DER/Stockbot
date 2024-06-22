@@ -24,5 +24,3 @@ def getArticle():
     result.append(url)
 
     return result
-
-print(getArticle())
