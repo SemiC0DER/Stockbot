@@ -1,8 +1,7 @@
 import discord
 import os
 from discord import app_commands
-import Ap
-import Bloomberg
+import News
 import StockMarket
 import MessageTools
 import StockDict
@@ -25,12 +24,12 @@ client = MyClient()
 
 cmd = {
     '/도움': '무엇을 도와드릴까요?',
-    '/블룸버그': '오늘의 블룸버그 기사를 요약합니다.',
+    '/뉴스': '(뉴스 "언론사")로 메이저 언론사의 최신 주식 뉴스를 보여줍니다. (/뉴스목록으로 종류를 보여줍니다)',
+    '/뉴스목록': '/뉴스 명령어로 보여줄 수 있는 언론사들의 목록을 보여줍니다.',
     '/증시': '(/증시 "찾을 증시")로 현재시각의 증시를 보여줍니다. (/증시목록으로 종류를 보여줍니다)',
     '/증시목록': '/증시 명령어로 보여줄 수 있는 주식시장의 목록을 보여줍니다.',
     '/용어': '(/용어 "찾을 용어")로 주식 용어를 보여줍니다. (/용어목록으로 용어들을 보여줍니다.)',
     '/용어목록': '등재된 용어들의 목록을 보여줍니다.',
-    '/ap': '최신 AP통신의 주식시장 기사를 보여줍니다.'
 }
 
 @client.tree.command(name="도움", description=cmd['/도움'])
@@ -43,38 +42,39 @@ async def 도움(interaction: discord.Interaction):
     )
     await interaction.response.send_message(embed=help_embed)
 
-@client.tree.command(name="블룸버그", description=cmd['/블룸버그'])
-async def 블룸버그(interaction: discord.Interaction):
-    try:
-        await interaction.response.defer(thinking=True)
-        
-        article = Bloomberg.getArticle()
-        embed = MessageTools.embedNews(article)
-        button = MessageTools.linkbutton(article[3])
-        
-        await interaction.followup.send(embed=embed, view=button)
-        
-    except Exception as e:
-        await interaction.followup.send("명령어를 실행하는 동안 오류가 발생했습니다.")
-        print(f"Error: {e}")
+@client.tree.command(name="뉴스", description=cmd['/뉴스'])
+async def 뉴스(interaction: discord.Interaction,*,message : str = None):
+    await interaction.response.defer()
+    if message:
+        available = News.classmap
 
-@client.tree.command(name='ap', description=cmd['/ap'])
-async def ap(interaction: discord.Interaction):
-    try:
-        await interaction.response.defer(thinking=True)
-        
-        article = Ap.getArticle()
-        embed = MessageTools.embedNews(article)
-        button = MessageTools.linkbutton(article[3])
-        
-        await interaction.followup.send(embed=embed, view=button)
-        
-    except Exception as e:
-        await interaction.followup.send("명령어를 실행하는 동안 오류가 발생했습니다.")
-        print(f"Error: {e}")
+        if message in available:
+            try:
+                news = available[message]()
+                article = news.getArticle()
+
+                embed = MessageTools.embedNews(article)
+                button = MessageTools.linkbutton(article[3])
+
+                await interaction.followup.send(embed=embed, view=button)
+
+            except Exception as e:
+                await interaction.followup.send("명령어를 실행하는 동안 오류가 발생했습니다.")
+                print(f"Error: {e}")
+        else:
+            interaction.followup.send(f"{interaction.command}와 같은 언론사는 등록되지 않았습니다.\n\n\"!뉴스목록\"으로 가능한 뉴스를 찾으세요.")
+    else:
+        interaction.followup.send("찾을 뉴스를 입력해주세요.")
+
+@client.tree.command(name="뉴스목록", description=cmd['/뉴스목록'])
+async def 뉴스목록(interaction: discord.Interaction):
+    newslist = sorted(News.classmap)
+    embed = discord.Embed(title='뉴스목록', description='\n'.join(newslist), color=0xED0086)
+    await interaction.response.send_message(embed=embed)
 
 @client.tree.command(name="증시", description=cmd['/증시'])
 async def 증시(interaction: discord.Interaction, message: str = None):
+    await interaction.response.defer()
     if message:
         markets = StockMarket.getMarketAll()
         if message in markets:
@@ -86,11 +86,11 @@ async def 증시(interaction: discord.Interaction, message: str = None):
                 market = StockMarket.getWorldMarket(midx-4)
 
             embed = MessageTools.embedMarket(market)
-            await interaction.response.send_message(embed=embed)
+            await interaction.followup.send(embed=embed)
         else:
-            await interaction.response.send_message('그런 주식시장이 등록되지 않았습니다. 가능한 시장을 /증시목록으로 확인해주세요')
+            await interaction.followup.send('그런 주식시장이 등록되지 않았습니다. 가능한 시장을 /증시목록으로 확인해주세요')
     else:
-        await interaction.response.send_message("찾을 주식시장을 입력해주세요.")
+        await interaction.followup.send("찾을 주식시장을 입력해주세요.")
 
 @client.tree.command(name="증시목록", description=cmd['/증시목록'])
 async def 증시목록(interaction: discord.Interaction):
