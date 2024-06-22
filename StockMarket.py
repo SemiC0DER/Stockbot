@@ -44,7 +44,7 @@ def getDomesticMarket(n):
 def getWorldMarket(n):
     symbol = ['DJI@DJI', 'NII@NI225', 'LNS@FTSE100', 'NAS@IXIC', 'SHS@000001', 'PAS@CAC40', 'SPI@SPX', 'HSI@HSI', 'XTR@DAX30']
     worldURL = f'https://finance.naver.com/world/sise.naver?symbol={symbol[n]}'
-    graphURL = 'https://finance.naver.com/world/'
+    graphURL = f"https://ssl.pstatic.net/imgfinance/chart/world/continent/{symbol[n]}.png"
 
     res = requests.get(worldURL).text
     soup = BeautifulSoup(res , 'lxml')
@@ -56,11 +56,6 @@ def getWorldMarket(n):
     market.append(today[2].text.replace('\n', '')[1:-1])
   
     market[2] += '상승' if market[3][0] == '+' else '하락'
-    
-    res = requests.get(graphURL).text
-    soup = BeautifulSoup(res , 'lxml')
-    graph = soup.find('div', attrs={'class':'market_data'}).select('li')[n].find('img')['src']
-    print(graph)
-    market.append(graph)
+    market.append(graphURL)
 
     return market
