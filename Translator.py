@@ -1,9 +1,9 @@
 import deepl
 import os
+from dotenv import load_dotenv
 
-key_path = os.path.dirname( os.path.abspath( __file__ ) )+"/translatekey.txt"
-t = open(key_path,"r",encoding="utf-8")
-tkey = t.read().split()[0]
+load_dotenv()
+tkey = os.getenv('Translatekey')
 
 def translate(text):
     translator = deepl.Translator(tkey)
