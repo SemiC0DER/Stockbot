@@ -21,6 +21,5 @@ pip install -r requirements.txt
 .eva
 ```
 TOKEN = 토큰토큰토큰숫자문자
+TRANSLATEKEY = 문자숫자문자
 ```
-<br>
-translatekey.txt(나도모름)
