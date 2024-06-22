@@ -1,8 +1,6 @@
 import discord
 import os
 from discord import app_commands
-import Ap
-import Bloomberg
 import News
 import StockMarket
 import MessageTools
@@ -48,12 +46,13 @@ async def 도움(interaction: discord.Interaction):
 
 @client.tree.command(name="뉴스", description=cmd['/뉴스'])
 async def 뉴스(interaction: discord.Interaction,*,message : str = None):
+    await interaction.response.defer()
     if message:
         available = News.classmap
 
         if message in available:
             try:
-                news = available[message]
+                news = available[message]()
                 article = news.getArticle()
 
                 embed = MessageTools.embedNews(article)
@@ -74,36 +73,6 @@ async def 뉴스목록(interaction: discord.Interaction):
     newslist = sorted(News.classmap)
     embed = discord.Embed(title='뉴스목록', description='\n'.join(newslist), color=0xED0086)
     await interaction.response.send_message(embed=embed)
-
-@client.tree.command(name="블룸버그", description=cmd['/블룸버그'])
-async def 블룸버그(interaction: discord.Interaction):
-    try:
-        await interaction.response.defer(thinking=True)
-        
-        article = Bloomberg.getArticle()
-        embed = MessageTools.embedNews(article)
-        button = MessageTools.linkbutton(article[3])
-        
-        await interaction.followup.send(embed=embed, view=button)
-        
-    except Exception as e:
-        await interaction.followup.send("명령어를 실행하는 동안 오류가 발생했습니다.")
-        print(f"Error: {e}")
-
-@client.tree.command(name='ap', description=cmd['/ap'])
-async def ap(interaction: discord.Interaction):
-    try:
-        await interaction.response.defer(thinking=True)
-        
-        article = Ap.getArticle()
-        embed = MessageTools.embedNews(article)
-        button = MessageTools.linkbutton(article[3])
-        
-        await interaction.followup.send(embed=embed, view=button)
-        
-    except Exception as e:
-        await interaction.followup.send("명령어를 실행하는 동안 오류가 발생했습니다.")
-        print(f"Error: {e}")
 
 @client.tree.command(name="증시", description=cmd['/증시'])
 async def 증시(interaction: discord.Interaction, message: str = None):
