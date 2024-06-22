@@ -2,7 +2,9 @@ import abc
 import requests
 from bs4 import BeautifulSoup
 from Translator import translate
-
+'''
+뉴스 클래스들의 getArticle의 return값은 [제목, 설명, 이미지, 링크]여야 합니다!
+'''
 class News(metaclass=abc.ABCMeta):
     @abc.abstractmethod
     def __init__(self):
