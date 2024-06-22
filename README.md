@@ -1,5 +1,5 @@
 # Stocker
-## 개
+## 개요
 Stocker는 대지고등학교 동창들이 만드는 주식정보 Discord 봇입니다!
 
 ## 사용법 | How to Use
@@ -18,5 +18,8 @@ pip install -r requirements.txt
 ```
 
 ### 3. 필수 파일 추가
-.eva (토큰은 개발자에게 문의)
-translatekey.txt(나도모름)
+.env
+```
+TOKEN = 토큰토큰토큰숫자문자
+TRANSLATEKEY = 문자숫자문자
+```
