@@ -62,7 +62,7 @@ async def 뉴스(interaction: discord.Interaction,*,message : str = None):
                 await interaction.followup.send("명령어를 실행하는 동안 오류가 발생했습니다.")
                 print(f"Error: {e}")
         else:
-            await interaction.followup.send(f"{message}와 같은 언론사는 등록되지 않았습니다.\n\n\"!뉴스목록\"으로 가능한 뉴스를 찾으세요.")
+            await interaction.followup.send(f"{message}와 같은 언론사는 등록되지 않았습니다.\n\"/뉴스목록\"으로 가능한 뉴스를 찾으세요.")
     else:
         await interaction.followup.send("찾을 뉴스를 입력해주세요.")
 
@@ -88,7 +88,7 @@ async def 증시(interaction: discord.Interaction, message: str = None):
             embed = MessageTools.embedMarket(market)
             await interaction.followup.send(embed=embed)
         else:
-            await interaction.followup.send(f'{message}와 같은 주식시장이 등록되지 않았습니다. 가능한 시장을 /증시목록으로 확인해주세요')
+            await interaction.followup.send(f'{message}와 같은 주식시장이 등록되지 않았습니다.\n/증시목록으로 가능한 시장을 확인해주세요')
     else:
         await interaction.followup.send("찾을 주식시장을 입력해주세요.")
 
