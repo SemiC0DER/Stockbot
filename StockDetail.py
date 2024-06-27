@@ -54,6 +54,3 @@ class Stock(): #생성자 -> searchStock -> getStock 순으로 주식을 검색�
         current_state = temp.find('span', attrs={'data-test':'trading-state-label'}).text #시장 상태
 
         return [title, description, last_price, price_change, change_percent, current_state, url]
-    
-stock = Stock('달러','외환')
-print(stock.getStock())
