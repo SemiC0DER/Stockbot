@@ -5,6 +5,7 @@ import News
 import StockMarket
 import MessageTools
 import StockDict
+from StockDetail import Stock
 from dotenv import load_dotenv
 
 # 토큰 로드
@@ -26,10 +27,12 @@ cmd = {
     '/도움': '무엇을 도와드릴까요?',
     '/뉴스': '(뉴스 "언론사")로 메이저 언론사의 최신 주식 뉴스를 보여줍니다. (/뉴스목록으로 종류를 보여줍니다)',
     '/뉴스목록': '/뉴스 명령어로 보여줄 수 있는 언론사들의 목록을 보여줍니다.',
-    '/증시': '(/증시 "찾을 증시")로 현재시각의 증시를 보여줍니다. (/증시목록으로 종류를 보여줍니다)',
+    '/증시': '(/증시 "찾을 증시")으로 현재시각의 증시를 보여줍니다. (/증시목록으로 종류를 보여줍니다)',
     '/증시목록': '/증시 명령어로 보여줄 수 있는 주식시장의 목록을 보여줍니다.',
-    '/용어': '(/용어 "찾을 용어")로 주식 용어를 보여줍니다. (/용어목록으로 용어들을 보여줍니다.)',
+    '/용어': '(/용어 "찾을 용어")으로 주식 용어를 보여줍니다. (/용어목록으로 용어들을 보여줍니다.)',
     '/용어목록': '등재된 용어들의 목록을 보여줍니다.',
+    '/주식': '(/주식 "찾을 주식")으로 주식의 상세현황을 보여줍니다.',
+    '/환율': '(/환율 "찾을 환율")으로 환율의 상세현황을 보여줍니다.'
 }
 
 @client.tree.command(name="도움", description=cmd['/도움'])
@@ -43,7 +46,7 @@ async def 도움(interaction: discord.Interaction):
     await interaction.response.send_message(embed=help_embed)
 
 @client.tree.command(name="뉴스", description=cmd['/뉴스'])
-async def 뉴스(interaction: discord.Interaction,*,message : str = None):
+async def 뉴스(interaction: discord.Interaction, message : str = None):
     await interaction.response.defer()
     if message:
         available = News.classmap
@@ -113,6 +116,34 @@ async def 용어목록(interaction: discord.Interaction):
     wordlist = StockDict.wordList()
     book = discord.Embed(title='용어목록', description=wordlist, color=0x62c1cc)
     await interaction.response.send_message(embed=book)
+
+@client.tree.command(name='주식', description=cmd['/주식'])
+async def 주식(interaction: discord.Interaction, message : str = None):
+    await interaction.response.defer()
+    if message:
+        stock = Stock(message, '주식')
+        detail = stock.getStock()
+        if detail:
+            result = MessageTools.embedStock(detail)
+            await interaction.followup.send(embed=result[0],view=result[1])
+        else:
+            await interaction.followup.send(f'{message}와 같은 검색결과가 없습니다. 다른 주식을 입력해주세요.')
+    else:
+        await interaction.followup.send('찾을 주식을 입력해주세요.')
+
+@client.tree.command(name='환율', description=cmd['/환율'])
+async def 환율(interaction: discord.Interaction, message : str = None):
+    await interaction.response.defer()
+    if message:
+        stock = Stock(message, '외환')
+        detail = stock.getStock()
+        if detail:
+            result = MessageTools.embedStock(detail)
+            await interaction.followup.send(embed=result[0],view=result[1])
+        else:
+            await interaction.followup.send(f'{message}와 같은 검색결과가 없습니다. 다른 환율을 입력해주세요.')
+    else:
+        await interaction.followup.send('찾을 환율을 입력해주세요.')
 
 # 봇 실행
 client.run(os.getenv('TOKEN'))

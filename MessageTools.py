@@ -22,3 +22,15 @@ class linkbutton(discord.ui.View):
         
     async def on_timeout(self):
         self.clear_items()
+
+
+def embedStock(detail): #detail == [제목, 정보, 가격, 변화, 변화%, 시장상태, url]
+    current_color = 0xFF0000 if detail[3][0] == '+' else 0x0100FF
+    embed = discord.Embed(title=detail[0], description=detail[1], color=current_color)
+    embed.set_thumbnail(url='https://i-invdn-com.investing.com/redesign/images/seo/investing_300X300.png')
+    embed.add_field(name=detail[2], value='', inline=False)
+    embed.add_field(name=detail[3], value='', inline=True)
+    embed.add_field(name=detail[4], value='', inline=True)
+    embed.set_footer(text=detail[5])
+    button = linkbutton(detail[6])
+    return [embed, button]
